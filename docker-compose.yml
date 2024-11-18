@@ -1,0 +1,11 @@
+services:
+  backend:
+    build:
+      context: .  # Certifique-se de que isso aponta para o diretório correto
+    working_dir: /back-end
+    environment:
+      DATABASE_URL: postgresql://postgres.ulcouxslkgvmjtujuysx:Ultrabem271!@aws-0-sa-east-1.pooler.supabase.com:6543/postgres
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./back-end:/back-end  # Sincronize o diretório local com o container
