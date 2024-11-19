@@ -2,10 +2,10 @@ import os, logging
 from flask import Flask, request, jsonify
 from .models.models import db
 from .routes.routes import routes
-
+from flask_cors import CORS 
 def create_app():
     app = Flask(__name__)
-
+    CORS(app)
     # Pega a URL do banco de dados da variável de ambiente
     app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL')
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False

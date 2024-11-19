@@ -1,11 +1,34 @@
+version: '3.8'
+
 services:
-  backend:
+  backend_pointlojista:
     build:
-      context: .  # Certifique-se de que isso aponta para o diretório correto
-    working_dir: /back-end
+      context: ./backend  # Caminho para o diretório do backend
+    working_dir: /backend
     environment:
       DATABASE_URL: postgresql://postgres.ulcouxslkgvmjtujuysx:Ultrabem271!@aws-0-sa-east-1.pooler.supabase.com:6543/postgres
     ports:
       - "5000:5000"
     volumes:
-      - ./back-end:/back-end  # Sincronize o diretório local com o container
+      - ./backend:/backend
+    networks:
+      - app-network
+
+  frontend_pointlojista:
+    build:
+      context: ./frontend  # Caminho para o diretório do frontend
+    ports:
+      - "3000:3000"  # Exponha a porta 3000
+    volumes:
+      - ./frontend:/app  # Sincronize os arquivos locais com o container
+    environment:
+      - NODE_ENV=development
+    command: npm run dev  # Inicie o Next.js em modo de desenvolvimento
+    networks:
+      - app-network
+    depends_on:
+      - backend_pointlojista  # Frontend depende do Backend
+
+networks:
+  app-network:
+    driver: bridge  # Rede compartilhada entre o frontend e o backend

@@ -23,22 +23,29 @@ def create_user():
         data = request.get_json()
 
         # Verifica se o e-mail já existe no banco de dados
+        if 'email' not in data or 'password' not in data:
+            return jsonify({'message': 'Email and password are required'}), 400
+
         existing_user = Users.query.filter_by(email=data['email']).first()
         if existing_user:
             return jsonify({'message': 'User with this email already exists'}), 400
 
         # Cria o novo usuário
-        new_user = Users(name=data['name'], email=data['email'])
-        
-        # Adiciona o novo usuário ao banco de dados e confirma a transação
+        new_user = Users(email=data['email'], name=data['name'])
+        new_user.set_password(data['password'])  # Define a senha como hash
+
+        # Preenche outros campos dinamicamente
+        for key, value in data.items():
+            if key not in ['id','email'] and hasattr(new_user, key):
+                setattr(new_user, key, value)
+
+        # Adiciona ao banco de dados
         db.session.add(new_user)
         db.session.commit()
 
-        # Retorna uma resposta de sucesso
         return jsonify({'message': 'User created successfully'}), 201
 
     except Exception as e:
-        # Captura outros erros inesperados
         return jsonify({'message': f'An error occurred: {str(e)}'}), 500
 
 

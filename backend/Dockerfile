@@ -1,7 +1,7 @@
 FROM python:3.9-slim
 
 # Definindo o diretório de trabalho no container
-WORKDIR /back-end
+WORKDIR /backend
 
 # Copiando o arquivo de requisitos para o diretório de trabalho no container
 COPY . .
