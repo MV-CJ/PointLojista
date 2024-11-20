@@ -8,10 +8,22 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        background: "var(--background)",
-        foreground: "var(--foreground)",
+        blue: {
+          500: "#5D9CEC", // Azul claro para links e botões
+          600: "#4A8BC2", // Azul para hover
+        },
+        gray: {
+          100: "#F0F3F4", // Fundo da sidebar
+          600: "#7F8C8D", // Texto secundário
+        },
+        green: {
+          400: "#34B9A1", // Verde claro para botões
+        },
+        white: "#FFFFFF", // Branco
       },
     },
   },
-  plugins: [],
+  plugins: [
+    require('flowbite/plugin'), // Adicione o Flowbite como plugin
+  ],
 };

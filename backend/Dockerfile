@@ -9,10 +9,5 @@ COPY . .
 # Instalando as dependências
 RUN pip install -r requirements.txt
 
-
 # Comando para rodar a aplicação
-CMD ["gunicorn", "-b", "0.0.0.0:5000", "app.app:app"]
-
-
-
-
+CMD ["gunicorn", "-b", "0.0.0.0:5999", "app.app:app"]
