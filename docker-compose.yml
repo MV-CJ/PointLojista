@@ -1,4 +1,4 @@
-version: '3.9'
+version: '3.8'
 
 services:
   backend_pointlojista:
@@ -7,14 +7,45 @@ services:
     working_dir: /backend
     environment:
       DATABASE_URL: postgresql://postgres.ulcouxslkgvmjtujuysx:Ultrabem271!@aws-0-sa-east-1.pooler.supabase.com:6543/postgres
+      SECRET_KEY: "10a94832f2e57c165c3e41733bbd353baac6b0d4760d000cc2edbc923f84a23d"  # A chave secreta para o JWT
+      JWT_ACCESS_TOKEN_EXPIRES: "7200"  # Tempo de expiração do access token em segundos (2 horas)
+      JWT_REFRESH_TOKEN_EXPIRES: "86400"  # Tempo de expiração do refresh token em segundos (1 dia)
+      JWT_TOKEN_LOCATION: "headers,cookies"  # Localização dos tokens (cabeçalhos e cookies)
+      JWT_HEADER_NAME: "Authorization"  # Nome do cabeçalho para passar o token
+      JWT_HEADER_TYPE: "Bearer"  # Tipo de token no cabeçalho (usualmente 'Bearer')
+      FLASK_ENV: "production"  # Define o ambiente de produção
+      REDIS_URL: "redis://redis:6379/0"  # URL do Redis, aponta para o serviço 'redis' do Docker
     ports:
-      - "5999:5999"
+      - "5999:5999"  # Porta exposta para o backend
     volumes:
       - ./backend:/backend
     networks:
       - app-network
+    depends_on:
+      - redis
 
-      
+  redis:
+    image: "redis:latest"
+    ports:
+      - "6379:6379"
+    networks:
+      - app-network
+    command: ["redis-server"]
+
+  nginx:
+    image: nginx:latest
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf  # Mapeia o arquivo principal de configuração
+      - ./nginx-backend.conf:/etc/nginx/conf.d/backend.conf  # Arquivo de configuração do backend
+      - ./ssl:/etc/nginx/ssl  # Certificados SSL
+    depends_on:
+      - backend_pointlojista
+    networks:
+      - app-network
+
 networks:
   app-network:
-    driver: bridge  # Rede compartilhada entre o frontend e o backend
+    driver: bridge

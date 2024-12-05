@@ -1,19 +1,25 @@
-FROM python:3.9-slim
+FROM python:3.12-slim
 
-# Instalar dependências do PostgreSQL e ferramentas de compilação
-RUN apt-get update && apt-get install -y libpq-dev gcc
-
-# Definindo o diretório de trabalho no container
+# Definir diretório de trabalho
 WORKDIR /backend
 
-# Copiando os arquivos do backend para o diretório de trabalho
+# Instalar dependências necessárias para o Python
+RUN apt-get update && apt-get install -y \
+    libpq-dev gcc \
+    && rm -rf /var/lib/apt/lists/*
+
+# Copiar as dependências do Python
+COPY requirements.txt requirements.txt
+
+# Instalar dependências do Python
+RUN pip install --upgrade pip
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Copiar o código para o contêiner
 COPY . .
 
-# Atualizando o pip
-RUN pip install --upgrade pip
+# Expor as portas usadas pelo backend
+EXPOSE 5999
 
-# Instalando as dependências
-RUN pip install -r requirements.txt
-
-# Comando para rodar a aplicação usando Uvicorn (FastAPI)
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "5999"]
+# Iniciar o aplicativo Python
+CMD python run.py

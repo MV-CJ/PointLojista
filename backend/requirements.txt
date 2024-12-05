@@ -1,7 +1,9 @@
-fastapi
-uvicorn
+Flask
+Flask-SQLAlchemy
 psycopg2-binary
-sqlalchemy
-pydantic
-python-dotenv
-passlib
+flask-jwt-extended
+PyJWT
+flask-cors
+Flask-Limiter
+
+redis
