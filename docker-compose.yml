@@ -1,7 +1,7 @@
 version: '3.8'
 
 services:
-  backend_pointlojista:
+  backend:
     build:
       context: ./backend  # Caminho para o diretório do backend
     working_dir: /backend
@@ -21,16 +21,6 @@ services:
       - ./backend:/backend
     networks:
       - app-network
-    depends_on:
-      - redis
-
-  redis:
-    image: "redis:latest"
-    ports:
-      - "6379:6379"
-    networks:
-      - app-network
-    command: ["redis-server"]
 
   nginx:
     image: nginx:latest
@@ -42,7 +32,7 @@ services:
       - ./nginx-backend.conf:/etc/nginx/conf.d/backend.conf  # Arquivo de configuração do backend
       - ./ssl:/etc/nginx/ssl  # Certificados SSL
     depends_on:
-      - backend_pointlojista
+      - backend
     networks:
       - app-network
 

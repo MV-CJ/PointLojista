@@ -3,23 +3,14 @@ import os
 
 class Config:
     # Chaves de segurança
-    SECRET_KEY = os.getenv("SECRET_KEY")  # Chave secreta para JWT, ou uma default
-    JWT_SECRET_KEY = os.getenv("JWT_SECRET_KEY", 'your_jwt_secret_key_here')  # Substitua por uma chave segura
+    SECRET_KEY = os.getenv("SECRET_KEY", "your_secret_key")  # Defina uma chave secreta local para desenvolvimento
+    JWT_SECRET_KEY = os.getenv("JWT_SECRET_KEY", "your_jwt_secret_key")  # Defina uma chave JWT secreta local
 
-    # Chaves Banco
-    SQLALCHEMY_DATABASE_URI = os.getenv("DATABASE_URL")  # URL do banco de dados
-    SQLALCHEMY_TRACK_MODIFICATIONS = False  # Evitar overhead de rastrear modificações no banco de dados
+    # Configuração do Banco de Dados
+    SQLALCHEMY_DATABASE_URI = os.getenv("DATABASE_URL", "sqlite:///local.db")  # Usar SQLite localmente para desenvolvimento
+    SQLALCHEMY_TRACK_MODIFICATIONS = False  # Evitar overhead no SQLAlchemy
 
-    # Configurações do JWT
-    JWT_ACCESS_TOKEN_EXPIRES = timedelta(seconds=int(os.getenv('JWT_ACCESS_TOKEN_EXPIRES')))
-    JWT_REFRESH_TOKEN_EXPIRES = timedelta(seconds=int(os.getenv('JWT_REFRESH_TOKEN_EXPIRES')))
+    # Configurações de Expiração do JWT
+    JWT_ACCESS_TOKEN_EXPIRES = timedelta(seconds=int(os.getenv('JWT_ACCESS_TOKEN_EXPIRES')))  # 1 hora por padrão
+    JWT_REFRESH_TOKEN_EXPIRES = timedelta(seconds=int(os.getenv('JWT_REFRESH_TOKEN_EXPIRES')))  # 1 dia por padrão
 
-    # Localização dos tokens
-    JWT_TOKEN_LOCATION = os.getenv('JWT_TOKEN_LOCATION').split(',')
-
-    # Cabeçalhos JWT
-    JWT_HEADER_NAME = os.getenv('JWT_HEADER_NAME')
-    JWT_HEADER_TYPE = os.getenv('JWT_HEADER_TYPE')
-    
-    # Redis    
-    REDIS_URL = os.getenv('REDIS_URL')

@@ -1,28 +1,22 @@
-"use client"
+"use client";
 
-import * as React from "react"
-import { useTheme } from "next-themes"
+import * as React from "react";
+import { useTheme } from "next-themes";
 import {
-  BookOpen,
-  Bot,
-  Command,
-  Frame,
-  LifeBuoy,
-  Map,
-  PieChart,
-  Send,
-  PencilRuler,
-  Settings2,
-  SquareTerminal,
   ClipboardList,
   Users,
+  PencilRuler,
+  Settings2,
+  LifeBuoy,
+  Send,
   Moon,
   Sun,
-} from "lucide-react"
-import { NavMain } from "@/components/nav-main"
-import { NavProjects } from "@/components/nav-projects"
-import { NavSecondary } from "@/components/nav-secondary"
-import { NavUser } from "@/components/nav-user"
+  Command,
+} from "lucide-react";
+import { NavMain } from "@/components/nav-main";
+import { NavProjects } from "@/components/nav-projects";
+import { NavSecondary } from "@/components/nav-secondary";
+import { NavUser } from "@/components/nav-user";
 import {
   Sidebar,
   SidebarContent,
@@ -31,15 +25,35 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-} from "@/components/ui/sidebar"
+} from "@/components/ui/sidebar";
+import { useUserProfile } from '../app/services/auth'; // Import the hook
 
-const data = {
-  user: {
-    name: "B&C Eletrônicos",
-    email: "beceletronicos@gmail.com",
-    avatar: "/avatars/shadcn.jpg",
-  },
-  navMain: [
+export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  const { theme, setTheme } = useTheme();
+  const { userProfile, profileError, isLoading } = useUserProfile(); // Use the hook
+
+
+
+  const navSecondary = [
+    {
+      title: "Suporte",
+      url: "#",
+      icon: LifeBuoy,
+    },
+    {
+      title: "Feedback",
+      url: "#",
+      icon: Send,
+    },
+    {
+      title: theme === "dark" ? "Modo Claro" : "Modo Escuro",
+      icon: theme === "dark" ? Sun : Moon,
+      onClick: () => setTheme(theme === "dark" ? "light" : "dark"),
+      url: "#",
+    },
+  ];
+
+  const navMain = [
     {
       title: "Orçamentos",
       url: "#",
@@ -82,30 +96,7 @@ const data = {
         { title: "Não pensei", url: "#" },
       ],
     },
-  ],
-}
-
-export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
-  const { theme, setTheme } = useTheme()
-
-  const navSecondary = [
-    {
-      title: "Suporte",
-      url: "#",
-      icon: LifeBuoy,
-    },
-    {
-      title: "Feedback",
-      url: "#",
-      icon: Send,
-    },
-    {
-      title: theme === "dark" ? "Modo Claro" : "Modo Escuro",
-      icon: theme === "dark" ? Sun : Moon,
-      onClick: () => setTheme(theme === "dark" ? "light" : "dark"),
-      url: "#",
-    },
-  ]
+  ];
 
   return (
     <Sidebar variant="inset" {...props}>
@@ -118,7 +109,9 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                   <Command className="size-4" />
                 </div>
                 <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="truncate font-semibold">B&C Eletrônicos</span>
+                  <span className="truncate font-semibold">
+                    Empresa
+                  </span>
                 </div>
               </a>
             </SidebarMenuButton>
@@ -126,14 +119,17 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         </SidebarMenu>
       </SidebarHeader>
       <SidebarContent>
-        <NavMain items={data.navMain} />
-        <NavProjects projects={data.projects} />
-        {/* Passa o array atualizado com o botão de alternância */}
+        <NavMain items={navMain} />
+        <NavProjects projects={[]} />
         <NavSecondary items={navSecondary} className="mt-auto" />
       </SidebarContent>
       <SidebarFooter>
-        <NavUser user={data.user} />
+        <NavUser
+          user={{
+            name: "Usuário",
+          }}
+        />
       </SidebarFooter>
     </Sidebar>
-  )
+  );
 }
